@@ -44,22 +44,24 @@ class Manhattan:
         while open_list:
             x, y = open_list.pop(0)
             i = maze.get_cell_index(x, y)
-            c = step_map[i]
+            cost_here = step_map[i]
+            next_cost = cost_here + 1
+
             # update neighbors
             for nx, ny, nd in [
-                [x+1, y, Maze.East],
-                [x, y+1, Maze.North],
-                [x-1, y, Maze.West],
-                [x, y-1, Maze.South],
+                [x, y + 1, Maze.North],
+                [x + 1, y, Maze.East],
+                [x, y - 1, Maze.South],
+                [x - 1, y, Maze.West],
             ]:
                 # see if the next cell can be visited
-                if maze.is_outside_maze(nx, ny) or maze.wall(x, y, nd):
+                if maze.wall(x, y, nd):
                     continue
-                ni = maze.get_cell_index(nx, ny)
-                nc = step_map[ni]
-                if nc < c + 1:
+                next_i = maze.get_cell_index(nx, ny)
+                neighbour_cost = step_map[next_i]
+                if neighbour_cost <= next_cost:
                     continue
-                step_map[ni] = c + 1
+                step_map[next_i] = next_cost
                 open_list.append([nx, ny])
         self.step_map = step_map
         return step_map
