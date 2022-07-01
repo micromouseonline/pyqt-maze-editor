@@ -6,8 +6,7 @@
 # description: A Maze Editor written using PyQt5
 # python version >= 3.8
 # ============================================================================ #
-
-
+import math
 import struct
 from itertools import product
 
@@ -16,6 +15,7 @@ import numpy
 # from PyQt5.QtCore import
 import numpy as np
 from PyQt5.QtGui import QBrush, QPen, QColor, QPicture, QFont, QPainter, QFontMetrics
+from PyQt5.QtCore import QPointF
 from PyQt5.QtWidgets import QGraphicsItem
 # from PyQt5 import QtGui
 from PyQt5 import QtCore
@@ -44,6 +44,27 @@ POST_COLOR = YELLOW
 NO_PEN = QtCore.Qt.PenStyle.NoPen
 
 
+class Arrow():
+    def __init__(self, start, end):
+        self.start = start
+        self.end = end
+
+    @classmethod
+    def draw(self, painter, src, dst, color=WHITE):
+        """ draw an arrow between two points """
+        painter.drawLine(src, dst)
+        line = QtCore.QLineF(src, dst)
+        angle = math.acos(line.dx() / line.length())
+        if line.dy() >= 0:
+            angle = 2 * math.pi - angle
+        size = line.length() / 4
+        p1 = dst + QPointF(math.sin(angle - math.pi / 3) * size, math.cos(angle - math.pi / 3) * size)
+        p2 = dst + QPointF(math.sin(angle - math.pi + math.pi / 3) * size, math.cos(angle - math.pi + math.pi / 3) * size)
+        painter.drawLine(dst, p1)
+        painter.drawLine(dst, p2)
+        return
+
+
 class MazeItem(QGraphicsItem):
     def __init__(self):
         super().__init__()
@@ -54,7 +75,7 @@ class MazeItem(QGraphicsItem):
         # set some basic default values
         self.maze_size = 16
         self.cell_width = 2880 // self.maze_size
-        self.wall_width = max(4,192 // self.maze_size)
+        self.wall_width = max(4, 192 // self.maze_size)
         self.width = self.maze_size * self.cell_width + self.wall_width
         self.base_rect = QtCore.QRect(0, 0, self.width, self.width)
         self.notes = ''
@@ -62,6 +83,7 @@ class MazeItem(QGraphicsItem):
         self.needs_flood = True
         self.flooder = None
         self.display_costs = False
+        self.display_arrows = False
 
     def boundingRect(self):
         ''' all graphics items must implement this '''
@@ -71,12 +93,18 @@ class MazeItem(QGraphicsItem):
         self.maze = maze
         self.maze_size = self.maze.size
         self.cell_width = 2880 // self.maze_size
-        self.wall_width = max(4,192 // self.maze_size)
+        self.wall_width = max(4, 192 // self.maze_size)
         self.width = self.maze_size * self.cell_width + self.wall_width
         self.flooder = Manhattan(maze)
         self.is_modified = False
         self.needs_flood = True
         self.update()
+
+    def show_arrows(self):
+        self.display_arrows = True
+
+    def hide_arrows(self):
+        self.display_arrows = False
 
     def show_costs(self):
         self.display_costs = True
@@ -84,16 +112,12 @@ class MazeItem(QGraphicsItem):
     def hide_costs(self):
         self.display_costs = False
 
-    def paint_costs(self,painter):
+    def paint_costs(self, painter):
         if self.display_costs == False:
             return
-        if self.needs_flood:
-            self.flooder.set_maze(self.maze)
-            self.flooder.update()
-            self.needs_flood = False
 
         font = QFont()
-        font.setPixelSize(self.cell_width/3)
+        font.setPixelSize(self.cell_width / 3)
         font_height = QFontMetrics(font).height()
         painter.save()
         painter.setFont(font)
@@ -104,10 +128,42 @@ class MazeItem(QGraphicsItem):
             top = self.width - y * self.cell_width - self.cell_width - self.wall_width
             inner_rect = QtCore.QRect(left, top, self.cell_width, self.cell_width)
             inner_rect.adjust(self.wall_width, self.wall_width, 0, 0)
-            cost = self.flooder.get_cost_at(x,y)
+            cost = self.flooder.get_cost_at(x, y)
             if cost != np.inf:
-                painter.drawText(inner_rect,QtCore.Qt.AlignCenter,F"{cost}")
+                painter.drawText(inner_rect, QtCore.Qt.AlignCenter, F"{cost}")
         painter.restore()
+
+    def paint_arrows(self, painter):
+        if self.display_arrows == False:
+            return
+        painter.save()
+        painter.setPen(QPen(YELLOW, self.wall_width / 2, QtCore.Qt.SolidLine, QtCore.Qt.RoundCap, QtCore.Qt.RoundJoin))
+        # painter.setBrush(BLACK)
+        for (x, y) in product(range(self.maze_size), repeat=2):
+            left_x = x * self.cell_width + self.wall_width / 2 + 1 * self.cell_width / 4
+            mid_x = left_x + self.cell_width / 4
+            right_x = left_x + self.cell_width / 2
+            top_y = self.width - y * self.cell_width - self.cell_width - self.wall_width / 2 + self.cell_width / 4
+            mid_y = top_y + self.cell_width / 4
+            bottom_y = top_y + self.cell_width / 2
+            n = QPointF(mid_x, top_y)
+            e = QPointF(right_x, mid_y)
+            s = QPointF(mid_x, bottom_y)
+            w = QPointF(left_x, mid_y)
+            i = self.maze.get_cell_index(x, y)
+            if self.flooder.heading_map[i] == Maze.North:
+                Arrow.draw(painter, s, n)
+            elif self.flooder.heading_map[i] == Maze.East:
+                Arrow.draw(painter, w, e)
+            elif self.flooder.heading_map[i] == Maze.South:
+                Arrow.draw(painter, n, s)
+            elif self.flooder.heading_map[i] == Maze.West:
+                Arrow.draw(painter, e, w)
+            else:
+                pass
+
+        painter.restore()
+        Arrow.draw(painter, QPointF(0, 0), QPointF(20, 50), YELLOW)
 
     def paint_posts(self, painter):
         painter.setBrush(WALL_COLOR)
@@ -183,6 +239,10 @@ class MazeItem(QGraphicsItem):
         painter.drawText(540, 2890 + font_height, str(self.notes))
 
     def paint(self, painter, *args):
+        if self.needs_flood:
+            self.flooder.set_maze(self.maze)
+            self.flooder.update()
+            self.needs_flood = False
         painter.setBrush(DARK_GRAY)
         painter.drawRect(self.base_rect)
         self.paint_cells(painter)
@@ -190,6 +250,7 @@ class MazeItem(QGraphicsItem):
         self.paint_walls(painter)
         self.paint_notes(painter)
         self.paint_costs(painter)
+        self.paint_arrows(painter)
 
     def on_maze_click(self, pos, buttons, modifiers):
         self.notes = ''
@@ -207,7 +268,7 @@ class MazeItem(QGraphicsItem):
         self.is_modified = True
         self.needs_flood = True
         if modifiers == QtCore.Qt.ShiftModifier:
-            goal = [cell_x,cell_y]
+            goal = [cell_x, cell_y]
             if goal in self.maze.goals:
                 self.maze.goals.remove(goal)
             else:

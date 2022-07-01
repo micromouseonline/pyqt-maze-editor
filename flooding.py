@@ -9,8 +9,9 @@
 # ============================================================================ #
 import sys
 import numpy as np
-
+from itertools import product
 from maze import Maze
+
 
 class Manhattan:
     """
@@ -20,12 +21,21 @@ class Manhattan:
     def __init__(self, maze):
         self.maze = None
         self.step_map = None
+        self.heading_map = None
 
-    def set_maze(self,maze):
+    def set_maze(self, maze):
         self.maze = maze
         self.step_map = [np.inf] * maze.cell_index_size
+        self.heading_map = [Maze.Unknown] * maze.cell_index_size
 
     def update(self, roots=None):
+        if self.maze is None:
+            return
+        self.update_costs(roots)
+        # self.update_heading_map()
+        self.update_path_map()
+
+    def update_costs(self, roots=None):
         """
         calculate cost map of cells using breadth first search
         """
@@ -66,9 +76,76 @@ class Manhattan:
         self.step_map = step_map
         return step_map
 
-    def get_cost_at(self,x,y):
+    def get_cost_at(self, x, y):
+        if self.maze.is_outside_maze(x, y):
+            return np.inf
         cost = self.step_map[self.maze.get_cell_index(x, y)]
         return cost
+
+    def get_neighbour_cost(self, x, y, heading):
+        if self.maze.wall(x, y, heading):
+            return np.inf
+        if heading == Maze.North:
+            return self.step_map[self.maze.get_cell_index(x, y + 1)]
+        if heading == Maze.East:
+            return self.step_map[self.maze.get_cell_index(x + 1, y)]
+        if heading == Maze.South:
+            return self.step_map[self.maze.get_cell_index(x, y - 1)]
+        if heading == Maze.West:
+            return self.step_map[self.maze.get_cell_index(x - 1, y)]
+
+    def get_direction_to_smallest(self, x, y, start_heading=Maze.North):
+        if self.maze.is_outside_maze(x, y):
+            return Maze.Unknown
+        best_heading = start_heading
+        heading = start_heading
+        i = self.maze.get_cell_index(x, y)
+        lowest_cost = self.step_map[i]
+        for j in range(0, 4):
+            heading = (heading + j) % 4
+            cost = self.get_neighbour_cost(x,y,heading)
+            if cost < lowest_cost:
+                lowest_cost = cost
+                best_heading = heading
+        return best_heading
+
+    def update_heading_map(self):
+        if self.maze is None:
+            return
+        heading_map = self.heading_map
+        smallest_cost = np.inf
+        for (x, y) in product(range(self.maze.size), repeat=2):
+            i = self.maze.get_cell_index(x, y)
+            heading_now = self.heading_map[i]
+            heading_map[i] = self.get_direction_to_smallest(x,y,heading_now)
+        self.heading_map = heading_map
+        return heading_map
+
+    def update_path_map(self):
+        if self.maze is None:
+            return
+        self.heading_map = [Maze.Unknown] * self.maze.cell_index_size
+        if self.step_map[0] == np.inf:
+            self.heading_map[0] = Maze.South
+            return
+        self.heading_map[0] = Maze.North
+        x,y = self.maze.get_cell_xy(0)
+        while not [x,y] in self.maze.goals:
+            i = self.maze.get_cell_index(x,y)
+            heading_now = self.heading_map[i]
+            direction = self.get_direction_to_smallest(x,y,heading_now)
+            self.heading_map[i] = direction
+            # print(x,y,direction)
+            if direction == Maze.North:
+                y = y + 1
+            elif direction == Maze.East:
+                x = x + 1
+            elif direction == Maze.South:
+                y = y - 1
+            elif direction == Maze.West:
+                x = x - 1
+        return self.heading_map
+
 
     def __str__(self):
         maze = self.maze
