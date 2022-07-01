@@ -27,7 +27,7 @@ class Maze:
     a maze class includes wall data, start indexes, goal indexes
     """
     # constants
-    East, North, West, South = range(4)
+    East, North, West, South, Unknown = range(5)
 
     def __init__(self, size=32):
         """
