@@ -407,7 +407,7 @@ if __name__ == "__main__":
 
     # read maze file
     with open(filepath, 'r') as file:
-        maze = Maze.parse_maze_lines(file)
+        maze = Maze.parse_maze_file(file)
 
     # show info
     print(maze)
