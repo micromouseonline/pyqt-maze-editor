@@ -88,6 +88,10 @@ class Maze:
             raise ValueError("out of field!")
         return y * self.size + x
 
+    def get_cell_xy(self, i):
+        """ calculate the cell_x and cell_y from an index """
+        return i // self.size, i % self.size
+
     def is_outside_maze(self, x, y):
         """
         check that a cell location is valid
