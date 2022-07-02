@@ -22,6 +22,7 @@ class Manhattan:
         self.maze = None
         self.step_map = None
         self.heading_map = None
+        self.path = None
 
     def set_maze(self, maze):
         self.maze = maze
@@ -131,6 +132,7 @@ class Manhattan:
         self.heading_map[0] = Maze.North
         last_heading = Maze.North
         x,y = self.maze.get_cell_xy(0)
+        path = [[x,y]]
         while not [x,y] in self.maze.goals:
             i = self.maze.get_cell_index(x,y)
             heading_now = last_heading
@@ -145,7 +147,9 @@ class Manhattan:
                 y = y - 1
             elif direction == Maze.West:
                 x = x - 1
-        return self.heading_map
+            path.append([x,y])
+        self.path = path
+        return path
 
 
     def __str__(self):

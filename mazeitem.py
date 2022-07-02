@@ -37,6 +37,7 @@ GRAY = QColor(100, 100, 100)
 GREEN = QColor(0, 255, 0)
 RED = QColor(255, 0, 0)
 YELLOW = QColor(QtCore.Qt.yellow)
+ORANGE = QColor(223,108,27)
 WHITE = QColor(255, 255, 255)
 
 WALL_COLOR = RED
@@ -115,6 +116,9 @@ class MazeItem(QGraphicsItem):
     def paint_costs(self, painter):
         if self.display_costs == False:
             return
+        if self.flooder.path is None:
+            return
+
 
         font = QFont()
         font.setPixelSize(self.cell_width / 3)
@@ -129,6 +133,10 @@ class MazeItem(QGraphicsItem):
             inner_rect = QtCore.QRect(left, top, self.cell_width, self.cell_width)
             inner_rect.adjust(self.wall_width, self.wall_width, 0, 0)
             cost = self.flooder.get_cost_at(x, y)
+            if [x,y] in self.flooder.path:
+                painter.setPen(YELLOW)
+            else:
+                painter.setPen(ORANGE)
             if cost != np.inf:
                 painter.drawText(inner_rect, QtCore.Qt.AlignCenter, F"{cost}")
         painter.restore()
