@@ -102,7 +102,7 @@ class Manhattan:
         i = self.maze.get_cell_index(x, y)
         lowest_cost = self.step_map[i]
         for j in range(0, 4):
-            heading = (heading + j) % 4
+            heading = (start_heading + j) % 4
             cost = self.get_neighbour_cost(x,y,heading)
             if cost < lowest_cost:
                 lowest_cost = cost
@@ -129,13 +129,14 @@ class Manhattan:
             self.heading_map[0] = Maze.South
             return
         self.heading_map[0] = Maze.North
+        last_heading = Maze.North
         x,y = self.maze.get_cell_xy(0)
         while not [x,y] in self.maze.goals:
             i = self.maze.get_cell_index(x,y)
-            heading_now = self.heading_map[i]
+            heading_now = last_heading
             direction = self.get_direction_to_smallest(x,y,heading_now)
             self.heading_map[i] = direction
-            # print(x,y,direction)
+            last_heading = direction
             if direction == Maze.North:
                 y = y + 1
             elif direction == Maze.East:
