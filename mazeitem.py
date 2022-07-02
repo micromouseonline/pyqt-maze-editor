@@ -171,17 +171,20 @@ class MazeItem(QGraphicsItem):
                 pass
 
         painter.restore()
-        Arrow.draw(painter, QPointF(0, 0), QPointF(20, 50), YELLOW)
 
     def paint_posts(self, painter):
+        painter.save()
         painter.setBrush(WALL_COLOR)
         painter.setPen(QPen(BLACK))
         for (col, row) in product(range(self.maze_size + 1), repeat=2):
             x = self.cell_width * col
             y = self.cell_width * row
             painter.drawRect(x, y, self.wall_width, self.wall_width)
+        painter.restore()
 
     def paint_cells(self, painter):
+        painter.save()
+        painter.setPen(NO_PEN)
         for (x, y) in product(range(self.maze_size), repeat=2):
             left = x * self.cell_width
             top = self.width - y * self.cell_width - self.cell_width - self.wall_width
@@ -194,6 +197,7 @@ class MazeItem(QGraphicsItem):
             else:
                 painter.setBrush(BLACK)
             painter.drawRect(inner_rect)
+        painter.restore()
 
     def paint_walls(self, painter):
         if self.maze is None:
