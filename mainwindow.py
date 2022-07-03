@@ -77,6 +77,7 @@ class MainWindow(QtWidgets.QMainWindow):
         # self.ui.pb_button_b.clicked.connect(self.new_file)
         self.ui.cb_show_costs.stateChanged.connect(self.enable_costs)
         self.ui.cb_show_directions.stateChanged.connect(self.enable_directions)
+        self.ui.cb_show_paths.stateChanged.connect(self.enable_paths)
 
     def create_actions(self):
         icon = QIcon('./icons/filenew.png')
@@ -154,6 +155,15 @@ class MainWindow(QtWidgets.QMainWindow):
             self.maze_item.show_arrows()
         else:
             self.maze_item.hide_arrows()
+        self.maze_item.update()
+
+    def enable_paths(self,enable):
+        if self.maze_item is None:
+            return
+        if enable:
+            self.maze_item.show_paths()
+        else:
+            self.maze_item.hide_paths()
         self.maze_item.update()
 
     def list_value_changed(self, current_item, prev_item):
