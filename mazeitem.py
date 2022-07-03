@@ -173,7 +173,6 @@ class MazeItem(QGraphicsItem):
         painter.drawLine(p1, self.cell_center(x, y))
         painter.restore()
         path_length = int(path_length) + self.cell_width # add in the first and last half-cells
-        print(path_length)
         return path_length
 
     def paint_costs(self, painter):
