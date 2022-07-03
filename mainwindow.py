@@ -203,7 +203,6 @@ class MainWindow(QtWidgets.QMainWindow):
             self.restoreGeometry(geometry)
         else:
             self.resize(1200, 900)
-        print(settings)
         pass
 
     def write_settings(self):
