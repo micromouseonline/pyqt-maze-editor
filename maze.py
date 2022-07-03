@@ -263,9 +263,7 @@ class Maze:
             res += post_char  # first post
             for x in range(self.size):
                 # horizontal wall
-                if not self.is_known_wall(x, y, Maze.North):
-                    res += ' . '
-                elif self.is_wall(x, y, Maze.North):
+                if self.is_wall(x, y, Maze.North):
                     res += '---'
                 else:
                     res += '   '
@@ -284,9 +282,7 @@ class Maze:
                 else:
                     res += '   '
                 # vertical wall
-                if not self.is_known_wall(x, y, Maze.East):
-                    res += '.'
-                elif self.is_wall(x, y, Maze.East):
+                if self.is_wall(x, y, Maze.East):
                     res += '|'
                 else:
                     res += ' '
