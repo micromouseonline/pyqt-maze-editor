@@ -38,8 +38,6 @@ Pan a zoomed maze by moving the mouse while pressing the middle mouse button or 
 Show or hide costs for the currently selected flooding method with the checkbox in the options section.
 
 _Not Yet Implemented_
- - show/hide direction arrows
- - show/hide best path
  - change flooding method and options
  - select size when creating new maze
  - enable multiple, simultaneous flood/path options
