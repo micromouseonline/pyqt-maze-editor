@@ -43,13 +43,6 @@ class MainWindow(QtWidgets.QMainWindow):
         self.maze_scene = QtWidgets.QGraphicsScene()
         self.maze_item = MazeItem()
         self.maze_scene.addItem(self.maze_item)
-        self.maze_note = self.maze_scene.addText("NOTES")
-
-        font = QtGui.QFont()
-        font.setPixelSize(45)
-        self.maze_note.setFont(font)
-        self.maze_note.setDefaultTextColor(QtGui.QColor(QtCore.Qt.yellow))
-        self.maze_note.setPos(0, self.maze_item.width + 20)
 
         self.ui.maze_view.setScene(self.maze_scene)
         self.ui.maze_view.fitInView(self.maze_scene.sceneRect())
