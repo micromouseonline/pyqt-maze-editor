@@ -50,6 +50,7 @@ class Arrow():
         self.start = start
         self.end = end
 
+
     @classmethod
     def draw(self, painter, src, dst, color=WHITE):
         """ draw an arrow between two points """
@@ -79,6 +80,7 @@ class MazeItem(QGraphicsItem):
         self.wall_width = max(4, 192 // self.maze_size)
         self.width = self.maze_size * self.cell_width + self.wall_width
         self.base_rect = QtCore.QRect(0, 0, self.width, self.width)
+        self.path_length = 0
         self.notes = ''
         self.is_modified = False
         self.needs_flood = True
@@ -147,6 +149,7 @@ class MazeItem(QGraphicsItem):
             return
         if self.flooder.get_cost_at(0, 0) == np.inf:
             return
+        path_length = 0
         painter.save()
         painter.setPen(QPen(GREEN, self.wall_width / 2, QtCore.Qt.SolidLine, QtCore.Qt.RoundCap, QtCore.Qt.RoundJoin))
         p0 = self.cell_center(0, 0)
@@ -164,10 +167,14 @@ class MazeItem(QGraphicsItem):
             elif this_heading == Maze.West:
                 p2 = self.cell_left_center(x, y)
             painter.drawLine(p1, p2)
+            path_length += QtCore.QLineF(p1,p2).length()
             p1 = p2
         x, y = self.flooder.path[-1]
         painter.drawLine(p1, self.cell_center(x, y))
         painter.restore()
+        path_length = int(path_length) + self.cell_width # add in the first and last half-cells
+        print(path_length)
+        return path_length
 
     def paint_costs(self, painter):
         if self.display_costs == False:
@@ -298,9 +305,12 @@ class MazeItem(QGraphicsItem):
 
     def paint_notes(self, painter):
         ''' This will be where we display route metrics from a list of strings'''
-        self.notes = F'Simple Manhattan flood gives cell count to goal of {self.flooder.get_cost_at(0, 0)}'
+        if self.flooder.get_cost_at(0, 0) == np.inf:
+            self.notes = 'There is no path to the goal'
+        else:
+            self.notes = F'Simple Manhattan flood gives cell count to goal of {self.flooder.get_cost_at(0, 0)} ({self.path_length}mm)'
         font = QFont()
-        font.setPixelSize(48)
+        font.setPixelSize(64)
         font_height = QFontMetrics(font).height()
         painter.setFont(font)
         painter.setPen(YELLOW)
@@ -316,10 +326,10 @@ class MazeItem(QGraphicsItem):
         self.paint_cells(painter)
         self.paint_posts(painter)
         self.paint_walls(painter)
-        self.paint_notes(painter)
         self.paint_costs(painter)
         self.paint_arrows(painter)
-        self.paint_path(painter)
+        self.path_length  = self.paint_path(painter)
+        self.paint_notes(painter)
 
     def on_maze_click(self, pos, buttons, modifiers):
         # self.notes = ''
