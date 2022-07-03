@@ -298,12 +298,13 @@ class MazeItem(QGraphicsItem):
 
     def paint_notes(self, painter):
         ''' This will be where we display route metrics from a list of strings'''
+        self.notes = F'Simple Manhattan flood gives cell count to goal of {self.flooder.get_cost_at(0, 0)}'
         font = QFont()
-        font.setPixelSize(64)
+        font.setPixelSize(48)
         font_height = QFontMetrics(font).height()
         painter.setFont(font)
         painter.setPen(YELLOW)
-        painter.drawText(540, 2890 + font_height, str(self.notes))
+        painter.drawText(self.wall_width, self.maze_size * self.cell_width + self.wall_width + font_height, str(self.notes))
 
     def paint(self, painter, *args):
         if self.needs_flood:
@@ -321,7 +322,7 @@ class MazeItem(QGraphicsItem):
         self.paint_path(painter)
 
     def on_maze_click(self, pos, buttons, modifiers):
-        self.notes = ''
+        # self.notes = ''
         x = int(pos.x())
         y = self.maze_size * self.cell_width - int(pos.y())
         cell_x = x // self.cell_width
@@ -331,8 +332,8 @@ class MazeItem(QGraphicsItem):
         offset_x = x % self.cell_width
         offset_y = y % self.cell_width
         cell_id = cell_x * self.maze_size + cell_y
-        self.notes += F'Mouse: ({x},{y}) -> cell({cell_x},{cell_y})'
-        self.notes += F' offset:({offset_x},{offset_y})'
+        # self.notes += F'Mouse: ({x},{y}) -> cell({cell_x},{cell_y})'
+        # self.notes += F' offset:({offset_x},{offset_y})'
         self.is_modified = True
         self.needs_flood = True
         if modifiers == QtCore.Qt.ShiftModifier:
@@ -342,7 +343,8 @@ class MazeItem(QGraphicsItem):
             else:
                 self.maze.goals.append(goal)
         elif buttons == QtCore.Qt.RightButton:
-            self.notes += ' - change target cell'
+            # self.notes += ' - change target cell'
+            pass
         else:
             if offset_y > offset_x:
                 if offset_y > self.cell_width - offset_x:
