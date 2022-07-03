@@ -37,7 +37,7 @@ GRAY = QColor(100, 100, 100)
 GREEN = QColor(0, 255, 0)
 RED = QColor(255, 0, 0)
 YELLOW = QColor(QtCore.Qt.yellow)
-ORANGE = QColor(223,108,27)
+ORANGE = QColor(223, 108, 27)
 WHITE = QColor(255, 255, 255)
 
 WALL_COLOR = RED
@@ -121,8 +121,8 @@ class MazeItem(QGraphicsItem):
         self.display_paths = False
 
     def cell_origin(self, cell_x, cell_y) -> QtCore.QPointF:
-        cx = cell_x * self.cell_width + self.wall_width/2
-        cy = self.width - (cell_y + 1) * self.cell_width - self.wall_width/2
+        cx = cell_x * self.cell_width + self.wall_width / 2
+        cy = self.width - (cell_y + 1) * self.cell_width - self.wall_width / 2
         return QtCore.QPointF(cx, cy)
 
     def cell_center(self, cell_x, cell_y) -> QtCore.QPointF:
@@ -172,7 +172,6 @@ class MazeItem(QGraphicsItem):
         if self.flooder.path is None:
             return
 
-
         font = QFont()
         font.setPixelSize(self.cell_width / 3)
         font_height = QFontMetrics(font).height()
@@ -186,7 +185,7 @@ class MazeItem(QGraphicsItem):
             inner_rect = QtCore.QRect(left, top, self.cell_width, self.cell_width)
             inner_rect.adjust(self.wall_width, self.wall_width, 0, 0)
             cost = self.flooder.get_cost_at(x, y)
-            if [x,y] in self.flooder.path:
+            if [x, y] in self.flooder.path:
                 painter.setPen(YELLOW)
             else:
                 painter.setPen(ORANGE)
