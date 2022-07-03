@@ -78,6 +78,7 @@ class MainWindow(QtWidgets.QMainWindow):
         self.ui.cb_show_costs.stateChanged.connect(self.enable_costs)
         self.ui.cb_show_directions.stateChanged.connect(self.enable_directions)
         self.ui.cb_show_paths.stateChanged.connect(self.enable_paths)
+        self.ui.cb_show_paths.setChecked(True)
 
     def create_actions(self):
         icon = QIcon('./icons/filenew.png')
