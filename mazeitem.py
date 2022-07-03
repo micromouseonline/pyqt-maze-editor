@@ -85,6 +85,7 @@ class MazeItem(QGraphicsItem):
         self.flooder = None
         self.display_costs = False
         self.display_arrows = False
+        self.display_paths = False
 
     def boundingRect(self):
         ''' all graphics items must implement this '''
@@ -112,6 +113,58 @@ class MazeItem(QGraphicsItem):
 
     def hide_costs(self):
         self.display_costs = False
+
+    def show_paths(self):
+        self.display_paths = True
+
+    def hide_paths(self):
+        self.display_paths = False
+
+    def cell_origin(self, cell_x, cell_y) -> QtCore.QPointF:
+        cx = cell_x * self.cell_width + self.wall_width/2
+        cy = self.width - (cell_y + 1) * self.cell_width - self.wall_width/2
+        return QtCore.QPointF(cx, cy)
+
+    def cell_center(self, cell_x, cell_y) -> QtCore.QPointF:
+        return self.cell_origin(cell_x, cell_y) + QtCore.QPointF(self.cell_width / 2, self.cell_width / 2)
+
+    def cell_top_center(self, cell_x, cell_y) -> QtCore.QPointF:
+        return self.cell_origin(cell_x, cell_y) + QtCore.QPointF(self.cell_width / 2, 0)
+
+    def cell_left_center(self, cell_x, cell_y) -> QtCore.QPointF:
+        return self.cell_origin(cell_x, cell_y) + QtCore.QPointF(0, self.cell_width / 2)
+
+    def cell_right_center(self, cell_x, cell_y) -> QtCore.QPointF:
+        return self.cell_origin(cell_x, cell_y) + QtCore.QPointF(self.cell_width, self.cell_width / 2)
+
+    def cell_bottom_center(self, cell_x, cell_y) -> QtCore.QPointF:
+        return self.cell_origin(cell_x, cell_y) + QtCore.QPointF(self.cell_width / 2, self.cell_width)
+
+    def paint_path(self, painter):
+        if self.flooder.path is None:
+            return
+        if not self.display_paths:
+            return
+        painter.save()
+        painter.setPen(QPen(GREEN, self.wall_width / 2, QtCore.Qt.SolidLine, QtCore.Qt.RoundCap, QtCore.Qt.RoundJoin))
+        p0 = self.cell_center(0, 0)
+        p1 = self.cell_top_center(0, 0)
+        painter.drawLine(p0, p1)
+        for x, y in self.flooder.path[1:-1]:
+            this_heading = self.flooder.get_heading(x, y)
+            if this_heading == Maze.North:
+                p2 = self.cell_top_center(x, y)
+            elif this_heading == Maze.East:
+                p2 = self.cell_right_center(x, y)
+            elif this_heading == Maze.South:
+                p2 = self.cell_bottom_center(x, y)
+            elif this_heading == Maze.West:
+                p2 = self.cell_left_center(x, y)
+            painter.drawLine(p1, p2)
+            p1 = p2
+        x, y = self.flooder.path[-1]
+        painter.drawLine(p1, self.cell_center(x, y))
+        painter.restore()
 
     def paint_costs(self, painter):
         if self.display_costs == False:
@@ -263,6 +316,7 @@ class MazeItem(QGraphicsItem):
         self.paint_notes(painter)
         self.paint_costs(painter)
         self.paint_arrows(painter)
+        self.paint_path(painter)
 
     def on_maze_click(self, pos, buttons, modifiers):
         self.notes = ''
