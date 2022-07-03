@@ -1,17 +1,33 @@
-+---+---+---+---+---+---+---+---+
-|       |           |         G |
-+   +---+---+---+---+   +---+---+
-|                   |       |   |
-+   +---+---+---+   +---+   +   +
-|               |           |   |
-+---+   +---+---+   +---+   +---+
-|               |   |           |
-+---+---+---+   +   +   +---+   +
-|               |   |       |   |
-+   +---+   +---+   +   +---+   +
-|   |   |   |   |   |           |
-+   +   +   +   +   +---+   +---+
-|   |   |       |           |   |
-+   +   +   +---+---+---+   +   +
-| S |                       |   |
-+---+---+---+---+---+---+---+---+
+o---o---o---o---o---o---o---o---o---o---o---o---o---o---o---o---o
+|                                                               |
+o   o   o   o   o   o   o   o   o   o   o   o   o   o   o   o   o
+|                                                               |
+o   o   o   o   o   o   o   o   o   o   o   o   o   o   o   o   o
+|                                                               |
+o   o   o   o   o   o   o   o   o   o   o   o   o   o   o   o   o
+|                                                               |
+o   o   o   o   o   o   o   o   o   o   o   o   o   o   o   o   o
+|                                                               |
+o   o   o   o   o   o   o   o   o   o   o   o   o   o   o   o   o
+|                                                               |
+o   o   o   o   o   o   o   o   o   o   o   o   o   o   o   o   o
+|                                                               |
+o   o   o   o   o   o   o   o   o   o   o   o   o   o   o   o   o
+|                                                               |
+o---o---o---o---o---o---o---o---o   o   o   o   o   o   o   o   o
+|       |           |         G |                               |
+o   o---o---o---o---o   o---o---o   o   o   o   o   o   o   o   o
+|                   |       |   |                               |
+o   o---o---o---o   o---o   o   o   o   o   o   o   o   o   o   o
+|               |           |   |                               |
+o---o   o---o---o   o---o   o---o   o   o   o   o   o   o   o   o
+|               |   |           |                               |
+o---o---o---o   o   o   o---o   o   o   o   o   o   o   o   o   o
+|               |   |       |   |                               |
+o   o---o   o---o   o   o---o   o   o   o   o   o   o   o   o   o
+|   |   |   |   |   |           |                               |
+o   o   o   o   o   o---o   o---o   o   o   o   o   o   o   o   o
+|   |   |       |           |   |                               |
+o   o   o   o---o---o---o   o   o   o   o   o   o   o   o   o   o
+| S |                       |   |                               |
+o---o---o---o---o---o---o---o---o---o---o---o---o---o---o---o---o
