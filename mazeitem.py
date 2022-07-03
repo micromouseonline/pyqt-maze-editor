@@ -145,10 +145,13 @@ class MazeItem(QGraphicsItem):
             return
         if not self.display_paths:
             return
+        if self.flooder.get_cost_at(0, 0) == np.inf:
+            return
         painter.save()
         painter.setPen(QPen(GREEN, self.wall_width / 2, QtCore.Qt.SolidLine, QtCore.Qt.RoundCap, QtCore.Qt.RoundJoin))
         p0 = self.cell_center(0, 0)
         p1 = self.cell_top_center(0, 0)
+        p2 = p1
         painter.drawLine(p0, p1)
         for x, y in self.flooder.path[1:-1]:
             this_heading = self.flooder.get_heading(x, y)
