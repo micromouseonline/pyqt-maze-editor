@@ -122,6 +122,10 @@ class Manhattan:
         self.heading_map = heading_map
         return heading_map
 
+    def get_heading(self,x,y):
+        i = self.maze.get_cell_index(x, y)
+        return self.heading_map[i]
+
     def update_path_map(self):
         if self.maze is None:
             return
