@@ -30,7 +30,7 @@ from maze import Maze
 from flooding import Manhattan
 
 BLACK = QColor(0, 0, 0)
-DARK_GRAY = QColor(30, 10, 10)
+DARK_GRAY = QColor(10, 10, 10)
 GOAL_COLOR = QColor('#002a00')
 HOME_COLOR = QColor('#100010')
 GRAY = QColor(100, 100, 100)
