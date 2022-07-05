@@ -31,8 +31,8 @@ from flooding import Manhattan
 
 BLACK = QColor(0, 0, 0)
 DARK_GRAY = QColor(10, 10, 10)
-GOAL_COLOR = QColor('#002a00')
-HOME_COLOR = QColor('#100010')
+GOAL_COLOR = QColor(0,42,0)
+HOME_COLOR = QColor(16,0,16)
 GRAY = QColor(100, 100, 100)
 GREEN = QColor(0, 255, 0)
 RED = QColor(255, 0, 0)
@@ -307,7 +307,9 @@ class MazeItem(QGraphicsItem):
         if self.flooder.get_cost_at(0, 0) == np.inf:
             self.notes = 'There is no path to the goal'
         else:
-            self.notes = F'Simple Manhattan flood gives cell count to goal of {self.flooder.get_cost_at(0, 0)} ({self.path_length}mm)'
+            self.notes = F'Simple Manhattan flood gives cell count to goal of {self.flooder.get_cost_at(0, 0)}'
+            if self.path_length is not None:
+                self.notes += F' (path length = {self.path_length}mm)'
         font = QFont()
         font.setPixelSize(64)
         font_height = QFontMetrics(font).height()
