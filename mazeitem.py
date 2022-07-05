@@ -182,7 +182,7 @@ class MazeItem(QGraphicsItem):
             return
 
         font = QFont()
-        font.setPixelSize(self.cell_width / 3)
+        font.setPixelSize(int(self.cell_width / 3))
         font_height = QFontMetrics(font).height()
         painter.save()
         painter.setFont(font)
