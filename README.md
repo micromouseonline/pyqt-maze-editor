@@ -15,11 +15,11 @@ add Python to your path and make sure it is selected.
 
 With Python 3 installed on your computer, add the dependencies with:
 
-```pip3 install PyQt5 numpy```
+```pip install PyQt5 numpy``` or ```pip3 install PyQt5 numpy```
 
-Then run with
+Then run with ``` python main.py``` or ```python3 ./main.py```
 
-```python3 ./main.py```
+depending on how your python is installed
 
 ### Operation
 
