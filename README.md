@@ -4,6 +4,7 @@ A simple maze editor for micromouse mazes.
 
 __Note that this is a work in progress and some functions may not yet be implemented__
 
+
 ### Requirements
 
 As a Python application, this should run on any platform so long as the requirements are met.
@@ -17,7 +18,24 @@ With Python 3 installed on your computer, add the dependencies with:
 
 ```pip install PyQt5 numpy``` or ```pip3 install PyQt5 numpy```
 
-Then run with ``` python main.py``` or ```python3 ./main.py```
+### Getting Started
+
+#### Download all the files.
+
+You can do this with git by cloning the repository with a command like:
+
+``` git clone https://github.com/micromouseonline/pyqt-maze-editor.git ```
+
+which will create a directory under the one in which you execute the command. All the files will be in there.
+
+Alternatively, you can download all the files as a single zip file. On the github page for the repo, click the 
+```Code``` button and select `Download ZIP`. Unpack the files into a directory of your choice.
+
+#### Run the application.
+
+From a command prompt in the directory with all the downloaded files, just execute:
+
+``` python main.py``` or ```python3 ./main.py```
 
 depending on how your python is installed
 
