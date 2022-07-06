@@ -171,8 +171,9 @@ class MainWindow(QtWidgets.QMainWindow):
     def list_value_changed(self, current_item, prev_item):
         if not current_item:
             return
-        fname = current_item.text()
-        self.set_maze(fname)
+        if self.maybe_save():
+            fname = current_item.text()
+            self.set_maze(fname)
 
     def set_maze(self, fname):
         self.statusBar().showMessage(fname)
