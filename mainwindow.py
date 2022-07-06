@@ -74,11 +74,17 @@ class MainWindow(QtWidgets.QMainWindow):
         self.ui.cb_show_paths.setChecked(True)
 
     def create_actions(self):
-        icon = QIcon('./icons/filenew.png')
-        self._new_act = QAction(icon, "&New", self)
-        self._new_act.setShortcut(QKeySequence.New)
-        self._new_act.setStatusTip("Create a new file")
-        self._new_act.triggered.connect(self.new_file)
+        icon = QIcon('./icons/filenew-16.png')
+        self._new_16_act = QAction(icon, "New 16x16", self)
+        self._new_16_act.setShortcut(QKeySequence.New)
+        self._new_16_act.setStatusTip("Create a new 16x16 maze")
+        self._new_16_act.triggered.connect(self.new_16x16)
+
+        icon = QIcon('./icons/filenew-32.png')
+        self._new_32_act = QAction(icon, "New 32x32", self)
+        # self._new_32_act.setShortcut(QKeySequence.New)
+        self._new_32_act.setStatusTip("Create a new 32x32 maze")
+        self._new_32_act.triggered.connect(self.new_32x32)
 
         icon = QIcon('./icons/fileopen.png')
         self._open_act = QAction(icon, "&Open...", self)
@@ -113,7 +119,8 @@ class MainWindow(QtWidgets.QMainWindow):
 
     def create_menu(self):
         self._file_menu = self.menuBar().addMenu("&File")
-        self._file_menu.addAction(self._new_act)
+        self._file_menu.addAction(self._new_16_act)
+        self._file_menu.addAction(self._new_32_act)
         self._file_menu.addAction(self._open_act)
         self._file_menu.addAction(self._save_act)
         self._file_menu.addAction(self._save_as_act)
@@ -128,7 +135,8 @@ class MainWindow(QtWidgets.QMainWindow):
 
     def create_tool_bars(self):
         self._file_tool_bar = self.addToolBar("File")
-        self._file_tool_bar.addAction(self._new_act)
+        self._file_tool_bar.addAction(self._new_16_act)
+        self._file_tool_bar.addAction(self._new_32_act)
         self._file_tool_bar.addAction(self._open_act)
         self._file_tool_bar.addAction(self._save_act)
         self._file_tool_bar.addAction(self._exit_act)
@@ -219,12 +227,25 @@ class MainWindow(QtWidgets.QMainWindow):
                 return False
         return True
 
-    def new_file(self):
+    def new_file(self,size):
         ''' create new empty maze'''
-        new_maze = Maze.parse_maze_lines(maze.empty_classic_maze)
+        if size == 16:
+            new_maze = Maze.parse_maze_lines(maze.empty_classic_maze)
+        else:
+            new_maze = Maze.parse_maze_lines(maze.empty_half_size)
         self.current_file_name = ""
         self.maze_item.set_maze(new_maze)
         self.setWindowTitle(F"PyQt Maze Editor - [{self.current_file_name}]")
+        pass
+
+    def new_16x16(self):
+        if self.maybe_save():
+            self.new_file(16)
+        pass
+
+    def new_32x32(self):
+        if self.maybe_save():
+            self.new_file(32)
         pass
 
     def open(self):
